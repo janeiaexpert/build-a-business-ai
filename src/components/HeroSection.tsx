@@ -1,4 +1,4 @@
-import { Sparkles, Globe, Smartphone, ArrowRight, Users, Zap, Star } from "lucide-react";
+import { Sparkles, Globe, Zap, Star } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -25,18 +25,18 @@ const HeroSection = () => {
         Escolha o tipo de projeto e deixe a IA fazer o trabalho pesado.
       </p>
 
-      {/* Social proof */}
+      {/* Features */}
       <div className="relative z-10 flex flex-wrap items-center justify-center gap-6 mb-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="w-4 h-4 text-primary" />
-          <span><strong className="text-foreground">+3.200</strong> projetos criados</span>
+          <Zap className="w-4 h-4 text-primary" />
+          <span>Estrutura <strong className="text-foreground">completa</strong></span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Star className="w-4 h-4 text-primary" />
-          <span><strong className="text-foreground">98%</strong> satisfação</span>
+          <span>SEO <strong className="text-foreground">otimizado</strong></span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Zap className="w-4 h-4 text-primary" />
+          <Globe className="w-4 h-4 text-primary" />
           <span>Publicação <strong className="text-foreground">instantânea</strong></span>
         </div>
       </div>

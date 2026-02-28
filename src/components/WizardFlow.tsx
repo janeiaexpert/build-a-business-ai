@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, Sparkles, Palette, Building2, Zap, Target, ChevronDown, ChevronUp, Users, CreditCard, Wand2, ArrowRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ArrowLeft, Sparkles, Palette, Building2, Zap, Target, ChevronDown, ChevronUp, CreditCard, Wand2, ArrowRight, Copy, Check, FileText } from "lucide-react";
 
 interface WizardFlowProps {
   projectType: "site" | "app";
@@ -26,17 +26,205 @@ const WizardFlow = ({ projectType, onBack }: WizardFlowProps) => {
   const [audience, setAudience] = useState("");
   const [selectedMonetization, setSelectedMonetization] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  const [customDescription, setCustomDescription] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const progress = (step / TOTAL_STEPS) * 100;
 
   const canAdvance = () => {
     switch (step) {
-      case 1: return selectedCategory !== null;
+      case 1:
+        if (selectedCategory === 4) return customDescription.trim().length > 0;
+        return selectedCategory !== null;
       case 2: return selectedObjective !== null;
       case 3: return audience.trim().length > 0;
       case 4: return selectedMonetization !== null;
       default: return true;
     }
+  };
+
+  const generatedPRD = useMemo(() => {
+    if (step !== 5) return "";
+
+    const tipo = projectType === "site" ? "Landing Page / Site" : "Aplicativo / SaaS";
+    const categoria = selectedCategory !== null && selectedCategory < 4
+      ? categories[selectedCategory].title
+      : customDescription || "Personalizado";
+
+    const monetizationStrategy = (() => {
+      switch (selectedMonetization) {
+        case "Gratuito": return "Modelo gratuito. Foco em crescimento de base e engajamento. Monetização futura via upsell ou ads.";
+        case "Assinatura": return "Modelo de assinatura recorrente (mensal/anual). Implementar trial gratuito, paywall e gestão de planos via Stripe ou gateway de pagamento.";
+        case "Pagamento único": return "Modelo de pagamento único. Checkout simplificado, entrega imediata do produto/acesso.";
+        case "Ads": return "Modelo baseado em publicidade. Implementar espaços para banners, intersticiais ou conteúdo patrocinado.";
+        default: return "";
+      }
+    })();
+
+    const objectiveStrategy = (() => {
+      switch (selectedObjective) {
+        case "Vender": return "Foco em conversão de vendas. Páginas otimizadas com CTA forte, prova social, FAQ, garantia e checkout rápido.";
+        case "Captar leads": return "Foco em captura de leads. Formulários otimizados, lead magnets, pop-ups de saída e integração com email marketing.";
+        case "Monetizar por assinatura": return "Foco em retenção e LTV. Onboarding guiado, área de membros, conteúdo exclusivo e gestão de assinaturas.";
+        case "Validar ideia": return "Foco em validação rápida. MVP enxuto, landing page de teste, formulário de interesse e métricas de engajamento.";
+        default: return "";
+      }
+    })();
+
+    const pages = projectType === "site"
+      ? `
+## 📄 Páginas do Site
+
+1. **Home** — Hero com proposta de valor, CTA principal, benefícios, prova social
+2. **Sobre** — História, missão, equipe (se aplicável)
+3. **Contato** — Formulário de contato com validação
+4. **Blog** — Sistema de posts para SEO programático
+5. **Política de Privacidade** — Página legal obrigatória
+6. **Termos de Uso** — Página legal obrigatória`
+      : `
+## 📄 Estrutura do Aplicativo
+
+1. **Dashboard** — Visão geral com métricas e ações rápidas
+2. **Funcionalidade Principal** — Core feature baseada na categoria "${categoria}"
+3. **Configurações** — Perfil do usuário e preferências
+4. **Histórico / Resultados** — Registro de uso e outputs gerados
+5. **Onboarding** — Fluxo guiado de primeiro uso`;
+
+    const dbSchema = `
+## 🗄️ Estrutura do Banco de Dados
+
+\`\`\`sql
+-- Tabela de projetos
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  type TEXT NOT NULL, -- '${projectType}'
+  category TEXT NOT NULL, -- '${categoria}'
+  objective TEXT, -- '${selectedObjective}'
+  audience TEXT,
+  monetization TEXT, -- '${selectedMonetization}'
+  config JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabela de páginas
+CREATE TABLE pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  slug TEXT NOT NULL,
+  title TEXT NOT NULL,
+  seo_title TEXT,
+  seo_description TEXT,
+  content JSONB DEFAULT '{}',
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabela de leads
+CREATE TABLE leads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  name TEXT,
+  email TEXT NOT NULL,
+  source TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabela de assinaturas
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  plan TEXT NOT NULL,
+  status TEXT DEFAULT 'active',
+  gateway_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+\`\`\``;
+
+    return `# 📋 PRD — ${tipo}
+
+---
+
+## 🎯 Resumo do Projeto
+
+| Campo | Valor |
+|-------|-------|
+| **Tipo** | ${tipo} |
+| **Categoria** | ${categoria} |
+| **Objetivo** | ${selectedObjective} |
+| **Público-alvo** | ${audience} |
+| **Monetização** | ${selectedMonetization} |
+
+---
+
+## 🧭 Estratégia de Objetivo
+
+${objectiveStrategy}
+
+---
+
+## 💰 Estratégia de Monetização
+
+${monetizationStrategy}
+
+---
+${pages}
+
+---
+${dbSchema}
+
+---
+
+## 🔍 SEO
+
+- **Meta title**: Dinâmico por página, max 60 caracteres
+- **Meta description**: Otimizada por página, max 160 caracteres
+- **Heading structure**: H1 único por página
+- **URLs amigáveis**: Slugs descritivos
+- **Open Graph & Twitter Cards**: Configurados automaticamente
+- **Schema JSON-LD**: Implementado para tipo de conteúdo
+- **Sitemap XML**: Gerado automaticamente
+- **Robots.txt**: Configurado para indexação
+
+---
+
+## 🔐 Segurança
+
+- Row Level Security (RLS) em todas as tabelas
+- Autenticação via email + senha
+- Rate limiting nas APIs
+- Validação de inputs no frontend e backend
+- HTTPS obrigatório
+
+---
+
+## 📱 Responsividade
+
+- Mobile-first design
+- Breakpoints: 640px, 768px, 1024px, 1280px
+- Lazy loading de imagens
+- Core Web Vitals otimizado
+
+---
+
+## 🛠️ Stack Técnica
+
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Auth + Storage + Edge Functions)
+- **Deploy**: Domínio personalizado ou subdomínio automático
+
+---
+
+> **Prompt para IA criar este projeto:**
+>
+> Crie um ${tipo.toLowerCase()} na categoria "${categoria}" com objetivo de "${selectedObjective?.toLowerCase()}". O público-alvo é: "${audience}". O modelo de monetização será "${selectedMonetization?.toLowerCase()}". Implemente todas as páginas listadas no PRD, com SEO otimizado, banco de dados estruturado, autenticação de usuários e design responsivo premium em modo escuro.
+`;
+  }, [step, projectType, selectedCategory, selectedObjective, audience, selectedMonetization, customDescription]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(generatedPRD);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -48,7 +236,6 @@ const WizardFlow = ({ projectType, onBack }: WizardFlowProps) => {
           <span className="uppercase tracking-wider text-xs font-medium">Voltar</span>
         </button>
 
-        {/* Progress bar */}
         <div className="h-1 rounded-full bg-muted overflow-hidden mb-6">
           <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: "var(--gradient-cta)" }} />
         </div>
@@ -80,6 +267,14 @@ const WizardFlow = ({ projectType, onBack }: WizardFlowProps) => {
                 </button>
               ))}
             </div>
+            {selectedCategory === 4 && (
+              <textarea
+                value={customDescription}
+                onChange={(e) => setCustomDescription(e.target.value)}
+                placeholder="Descreva exatamente o que você precisa criar..."
+                className="w-full min-h-[100px] rounded-xl border border-border bg-card p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none mt-4"
+              />
+            )}
           </div>
         )}
 
@@ -134,18 +329,39 @@ const WizardFlow = ({ projectType, onBack }: WizardFlowProps) => {
         )}
 
         {step === 5 && (
-          <div className="animate-fade-in-up text-center">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-              <Wand2 className="w-10 h-10 text-primary" />
+          <div className="animate-fade-in-up">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <FileText className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-heading text-2xl font-bold">PRD Gerado</h2>
+                <p className="text-muted-foreground text-xs">Copie e use para criar seu projeto</p>
+              </div>
             </div>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold mb-3">Tudo pronto!</h2>
-            <p className="text-muted-foreground text-sm mb-8 max-w-md mx-auto">
-              A IA vai criar a estrutura completa do seu projeto: páginas, backend, SEO e copy otimizada.
-            </p>
-            <button className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95 text-primary-foreground" style={{ background: "var(--gradient-cta)" }}>
-              <Sparkles className="w-5 h-5" />
-              IA RECOMENDA E CRIA
-              <ArrowRight className="w-5 h-5" />
+
+            {/* Copy button */}
+            <button
+              onClick={handleCopy}
+              className="w-full mb-4 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
+              style={{ background: "var(--gradient-cta)" }}
+            >
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copiado!" : "Copiar PRD completo"}
+            </button>
+
+            {/* PRD Preview */}
+            <div className="rounded-xl border border-border bg-card p-5 overflow-auto max-h-[60vh]">
+              <pre className="whitespace-pre-wrap text-xs text-foreground/90 font-mono leading-relaxed">{generatedPRD}</pre>
+            </div>
+
+            {/* New project button */}
+            <button
+              onClick={onBack}
+              className="w-full mt-4 py-3 rounded-xl font-semibold text-sm transition-all border border-border bg-card hover:bg-muted text-foreground flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-primary" />
+              Criar outro projeto
             </button>
           </div>
         )}
@@ -161,7 +377,7 @@ const WizardFlow = ({ projectType, onBack }: WizardFlowProps) => {
               className="w-full py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
               style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
             >
-              Continuar
+              {step === 4 ? "Gerar PRD" : "Continuar"}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
