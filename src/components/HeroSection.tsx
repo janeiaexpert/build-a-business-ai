@@ -1,4 +1,4 @@
-import { Sparkles, Globe, Smartphone, ArrowRight, Users, Zap, Star } from "lucide-react";
+import { Sparkles, Globe, Zap, Star } from "lucide-react";
 
 const HeroSection = () => {
   return (
