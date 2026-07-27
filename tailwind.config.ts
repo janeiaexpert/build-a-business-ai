@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Playfair Display', 'serif'],
+        heading: ['Fraunces', 'serif'],
         body: ['Inter', 'sans-serif'],
       },
       colors: {
@@ -81,8 +81,8 @@ export default {
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px hsla(160, 84%, 39%, 0.1)" },
-          "50%": { boxShadow: "0 0 40px hsla(160, 84%, 39%, 0.25)" },
+          "0%, 100%": { boxShadow: "0 10px 30px -10px hsla(22, 45%, 24%, 0.15)" },
+          "50%": { boxShadow: "0 20px 50px -10px hsla(22, 45%, 24%, 0.3)" },
         },
       },
       animation: {
