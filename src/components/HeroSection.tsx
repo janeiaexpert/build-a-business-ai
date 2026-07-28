@@ -17,7 +17,7 @@ const HeroSection = () => {
       <h1 className="relative z-10 font-heading text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
         O que você quer
         <br />
-        <span className="text-gradient-primary italic inline-block pr-4 pb-2">Criar Hoje?</span>
+        <span className="text-gradient-primary italic inline-block pr-4 pb-4">Criar Hoje?</span>
       </h1>
 
       {/* Subtitle */}
