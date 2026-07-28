@@ -104,4 +104,30 @@
     background: hsla(36, 30%, 97%, 0.75);
     backdrop-filter: blur(20px) saturate(180%);
   }
+
+  /* Botões com iluminação de fundo */
+  .btn-lit {
+    position: relative;
+    isolation: isolate;
+  }
+  .btn-lit::before {
+    content: "";
+    position: absolute;
+    inset: -14%;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(60% 60% at 50% 50%, hsla(28, 55%, 60%, 0.55) 0%, hsla(22, 45%, 30%, 0.28) 55%, transparent 78%);
+    filter: blur(26px);
+    opacity: 0.55;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-lit:hover::before {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  .btn-lit-accent::before {
+    background: radial-gradient(60% 60% at 50% 50%, hsla(32, 65%, 68%, 0.6) 0%, hsla(28, 45%, 50%, 0.3) 55%, transparent 78%);
+  }
 }
+
