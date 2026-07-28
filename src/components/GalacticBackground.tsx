@@ -4,8 +4,25 @@ import * as THREE from "three";
 
 const STAR_COUNT = 1800;
 
+const makeCircleTexture = () => {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.35, "rgba(255,255,255,0.75)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+};
+
 const StarField = () => {
   const points = useRef<THREE.Points>(null);
+  const sprite = useMemo(() => makeCircleTexture(), []);
 
   const { positions, colors, sizes } = useMemo(() => {
     const positions = new Float32Array(STAR_COUNT * 3);
@@ -58,12 +75,13 @@ const StarField = () => {
       </bufferGeometry>
       <pointsMaterial
         vertexColors
-        size={0.055}
+        map={sprite}
+        alphaMap={sprite}
+        size={0.09}
         sizeAttenuation
         transparent
-        opacity={0.9}
+        opacity={0.85}
         depthWrite={false}
-        blending={THREE.NormalBlending}
       />
     </points>
   );
@@ -99,7 +117,7 @@ const GalacticBackground = () => {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 40%, hsla(36, 30%, 97%, 0.15) 0%, hsla(36, 30%, 97%, 0.75) 70%, hsla(36, 30%, 97%, 0.92) 100%)",
+            "radial-gradient(ellipse at 50% 45%, hsla(36, 30%, 97%, 0) 0%, hsla(36, 30%, 97%, 0.35) 65%, hsla(36, 30%, 97%, 0.8) 100%)",
         }}
       />
     </div>
