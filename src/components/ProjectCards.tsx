@@ -11,7 +11,7 @@ const ProjectCards = ({ onSelectType }: ProjectCardsProps) => {
         {/* Landing Page Card */}
         <button
           onClick={() => onSelectType("site")}
-          className="group text-left rounded-2xl p-8 card-hover glow-border cursor-pointer"
+          className="group text-left rounded-2xl p-8 card-hover glow-border btn-lit cursor-pointer"
           style={{ background: "var(--gradient-card)" }}
         >
           <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
@@ -38,7 +38,7 @@ const ProjectCards = ({ onSelectType }: ProjectCardsProps) => {
         {/* App / SaaS Card */}
         <button
           onClick={() => onSelectType("app")}
-          className="group text-left rounded-2xl p-8 card-hover glow-border-accent cursor-pointer"
+          className="group text-left rounded-2xl p-8 card-hover glow-border-accent btn-lit btn-lit-accent cursor-pointer"
           style={{ background: "var(--gradient-accent-card)" }}
         >
           <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6">

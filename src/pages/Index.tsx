@@ -2,6 +2,7 @@ import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import ProjectCards from "@/components/ProjectCards";
 import WizardFlow from "@/components/WizardFlow";
+import GalacticBackground from "@/components/GalacticBackground";
 
 const Index = () => {
   const [selectedType, setSelectedType] = useState<"site" | "app" | null>(null);
@@ -11,7 +12,8 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <GalacticBackground />
       <HeroSection />
       <ProjectCards onSelectType={setSelectedType} />
 
