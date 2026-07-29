@@ -26,12 +26,12 @@ const palettes = [
 ];
 
 const typographies = [
-  { name: "Moderna", heading: "Inter", body: "Inter", style: "sans-serif limpo", preview: "Aa" },
-  { name: "Elegante", heading: "Playfair Display", body: "Lato", style: "serif + sans", preview: "Aa" },
-  { name: "Técnica", heading: "Space Grotesk", body: "DM Sans", style: "geometrica", preview: "Aa" },
-  { name: "Humanista", heading: "Fraunces", body: "Inter", style: "serif orgânico", preview: "Aa" },
-  { name: "Minimalista", heading: "Outfit", body: "Outfit", style: "monofamília", preview: "Aa" },
-  { name: "Editorial", heading: "Cormorant Garamond", body: "Raleway", style: "clássico refinado", preview: "Aa" },
+  { name: "Moderna", heading: "Inter", body: "Inter", style: "sans-serif limpo", preview: "Aa", sample: "Título" },
+  { name: "Elegante", heading: "Playfair Display", body: "Lato", style: "serif + sans", preview: "Aa", sample: "Título" },
+  { name: "Técnica", heading: "Space Grotesk", body: "DM Sans", style: "geometrica", preview: "Aa", sample: "Título" },
+  { name: "Humanista", heading: "Fraunces", body: "Inter", style: "serif orgânico", preview: "Aa", sample: "Título" },
+  { name: "Minimalista", heading: "Outfit", body: "Outfit", style: "monofamília", preview: "Aa", sample: "Título" },
+  { name: "Editorial", heading: "Cormorant Garamond", body: "Raleway", style: "clássico refinado", preview: "Aa", sample: "Título" },
 ];
 
 const styles = [
@@ -220,8 +220,11 @@ const DesignSystemPicker = ({ selected, onChange }: DesignSystemPickerProps) => 
               onClick={() => onChange({ ...selected, typography: t.name })}
               className={`rounded-xl p-4 border transition-all text-left ${selected.typography === t.name ? "border-primary/50 bg-primary/5" : "border-border bg-card hover:border-muted-foreground/20"}`}
             >
-              <p className="text-2xl font-bold text-foreground mb-1" style={{ fontFamily: t.heading }}>
-                {t.preview}
+              <p className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: t.heading }}>
+                {t.sample}
+              </p>
+              <p className="text-xs text-muted-foreground mb-2" style={{ fontFamily: t.body }}>
+                Subtítulo exemplo
               </p>
               <p className="font-semibold text-xs text-foreground">{t.name}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5">{t.heading} + {t.body}</p>
