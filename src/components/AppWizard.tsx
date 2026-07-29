@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { ArrowLeft, ArrowRight, Copy, Check, FileText, Calculator, BarChart3, Wand2, Wrench, LayoutDashboard, Sparkles } from "lucide-react";
+import DesignSystemPicker, { type DesignSystem } from "./DesignSystemPicker";
 
 interface AppWizardProps {
   onBack: () => void;
@@ -17,7 +18,7 @@ const appTypes = [
 const monetizations = ["Gratuito (foco em usuários)", "Assinatura (mensal/anual)", "Pagamento único", "Freemium (base grátis + premium)"];
 const platforms = ["Web App (navegador)", "Mobile responsivo", "PWA (funciona offline)"];
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 const AppWizard = ({ onBack }: AppWizardProps) => {
   const [step, setStep] = useState(1);
@@ -27,6 +28,7 @@ const AppWizard = ({ onBack }: AppWizardProps) => {
   const [selectedMonetization, setSelectedMonetization] = useState<string | null>(null);
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [needsAuth, setNeedsAuth] = useState<boolean | null>(null);
+  const [designSystem, setDesignSystem] = useState<DesignSystem>({ palette: "", typography: "", style: "" });
   const [copied, setCopied] = useState(false);
 
   const progress = (step / TOTAL_STEPS) * 100;
@@ -38,12 +40,13 @@ const AppWizard = ({ onBack }: AppWizardProps) => {
       case 3: return selectedMonetization !== null;
       case 4: return selectedPlatform !== null;
       case 5: return needsAuth !== null;
+      case 6: return designSystem.palette !== "" && designSystem.typography !== "" && designSystem.style !== "";
       default: return true;
     }
   };
 
   const generatedPRD = useMemo(() => {
-    if (step !== 6) return "";
+    if (step !== 7) return "";
 
     const tipoApp = selectedType !== null ? appTypes[selectedType].title : customType;
 
@@ -59,31 +62,31 @@ const AppWizard = ({ onBack }: AppWizardProps) => {
 
     const features = (() => {
       switch (selectedType) {
-        case 0: // Calculadora
+        case 0:
           return `1. **Input de dados** — Campos de entrada com validação em tempo real
 2. **Engine de cálculo** — Lógica de negócio com fórmulas configuráveis
 3. **Resultado** — Exibição formatada com destaque para o resultado principal
 4. **Histórico** — Registros de cálculos anteriores do usuário
 5. **Compartilhar** — Exportar resultado como imagem ou PDF`;
-        case 1: // Analisador
+        case 1:
           return `1. **Upload/Input** — Envio de dados (CSV, texto, URL)
 2. **Processamento** — Análise automática dos dados
 3. **Dashboard de resultados** — Gráficos, tabelas e métricas
 4. **Relatórios** — PDF ou shareável com insights
 5. **Comparativos** — Evolução ao longo do tempo`;
-        case 2: // Gerador
+        case 2:
           return `1. **Formulário de entrada** — Parâmetros e opções de geração
 2. **Engine de geração** — IA ou templates para produzir conteúdo
 3. **Preview** — Visualização do resultado antes de salvar
 4. **Editor** — Edição manual do conteúdo gerado
 5. **Exportação** — Copiar, baixar (PDF, TXT, DOCX)`;
-        case 3: // Ferramenta
+        case 3:
           return `1. **Interface principal** — Tool central com todos os controles
 2. **Processamento** — Lógica da ferramenta
 3. **Resultados** — Output formatado e accionável
 4. **Favoritos** — Salvar configurações ou resultados frequentes
 5. **Ajuda** — Instruções de uso integradas`;
-        case 4: // Dashboard
+        case 4:
           return `1. **Visão geral** — KPIs principais em cards
 2. **Gráficos** — Evolução de métricas ao longo do tempo
 3. **Tabelas** — Dados detalhados com filtros e ordenação
@@ -101,9 +104,6 @@ const AppWizard = ({ onBack }: AppWizardProps) => {
 ## 🗄️ Estrutura do Banco de Dados
 
 \`\`\`sql
--- Tabela de usuários (gerenciada por auth)
--- Auth via Supabase Auth (email + senha + OAuth)
-
 -- Tabela de projetos/dados do usuário
 CREATE TABLE user_data (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -158,6 +158,33 @@ ${monetizationStrategy}
 ## 📱 Funcionalidades Principais
 
 ${features}
+
+---
+
+## 🎨 Design System
+
+### Paleta de Cores: ${designSystem.palette}
+
+| Elemento | Uso |
+|----------|-----|
+| **Cor primária** | Botões, links, destaques |
+| **Cor secundária** | Fundos, badges, ícones |
+| **Cor de fundo** | Background geral |
+| **Texto principal** | Títulos e parágrafos |
+| **Texto suave** | Descrições, placeholders |
+
+### Tipografia: ${designSystem.typography}
+
+- **Títulos**: Fonte display com peso bold, escala modular (1.25x)
+- **Corpo**: Fonte legível para leitura longa, peso regular 400-500
+- **Tamanhos**: H1 (2.5rem), H2 (2rem), H3 (1.5rem), Body (1rem), Small (0.875rem)
+
+### Estilo Visual: ${designSystem.style}
+
+- **Espaçamento**: Sistema de 8px base (8, 16, 24, 32, 48, 64)
+- **Border radius**: ${designSystem.style === "Apple" ? "0-12px (sutil)" : designSystem.style === "Airbnb" ? "8-16px (generoso)" : designSystem.style === "Stripe" ? "8-12px com glassmorphism" : designSystem.style === "Coca-Cola" ? "0-4px (mínimo)" : designSystem.style === "Spotify" ? "8-12px (cards arredondados)" : "8px (consistente)"}
+- **Sombras**: ${designSystem.style === "Apple" ? "Muito sutis, quase invisíveis" : designSystem.style === "Stripe" ? "Gradientes com blur" : "Leves e naturais"}
+- **Animações**: Transições suaves 200-300ms, hover states em todos os elementos interativos
 
 ---
 
@@ -224,8 +251,8 @@ ${needsAuth ? `- Autenticação via email + senha
 
 > **Prompt para IA criar este projeto:**
 >
-> Crie um ${tipoApp.toLowerCase()} chamado "${appName}". O modelo de monetização é "${selectedMonetization?.toLowerCase()}" e a plataforma é "${selectedPlatform?.toLowerCase()}". ${needsAuth ? "Implemente autenticação de usuários." : "Não precisa de login."} Crie todas as funcionalidades listadas acima com design responsivo premium, banco de dados estruturado e deploy pronto.`;
-  }, [step, selectedType, customType, appName, selectedMonetization, selectedPlatform, needsAuth]);
+> Crie um ${tipoApp.toLowerCase()} chamado "${appName}". O modelo de monetização é "${selectedMonetization?.toLowerCase()}" e a plataforma é "${selectedPlatform?.toLowerCase()}". Use o estilo visual "${designSystem.style}" com paleta de cores "${designSystem.palette}" e tipografia "${designSystem.typography}". ${needsAuth ? "Implemente autenticação de usuários." : "Não precisa de login."} Crie todas as funcionalidades listadas acima com design responsivo premium, banco de dados estruturado e deploy pronto.`;
+  }, [step, selectedType, customType, appName, selectedMonetization, selectedPlatform, needsAuth, designSystem]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedPRD);
@@ -356,6 +383,14 @@ ${needsAuth ? `- Autenticação via email + senha
 
         {step === 6 && (
           <div className="animate-fade-in-up">
+            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-center mb-2">Design System</h2>
+            <p className="text-muted-foreground text-center text-sm mb-6">Escolha as cores, fontes e estilo visual</p>
+            <DesignSystemPicker selected={designSystem} onChange={setDesignSystem} />
+          </div>
+        )}
+
+        {step === 7 && (
+          <div className="animate-fade-in-up">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-primary" />
@@ -391,7 +426,7 @@ ${needsAuth ? `- Autenticação via email + senha
       </div>
 
       {/* Bottom CTA */}
-      {step < 6 && (
+      {step < 7 && (
         <div className="fixed bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border">
           <div className="max-w-2xl mx-auto">
             <button
@@ -400,7 +435,7 @@ ${needsAuth ? `- Autenticação via email + senha
               className="w-full py-3 sm:py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
               style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
             >
-              {step === 5 ? "Gerar PRD do App" : "Continuar"}
+              {step === 6 ? "Gerar PRD do App" : "Continuar"}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

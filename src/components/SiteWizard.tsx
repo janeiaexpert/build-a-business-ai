@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { ArrowLeft, ArrowRight, Copy, Check, FileText, Globe, Layout, ShoppingCart, Camera, Link2, Sparkles } from "lucide-react";
+import DesignSystemPicker, { type DesignSystem } from "./DesignSystemPicker";
 
 interface SiteWizardProps {
   onBack: () => void;
@@ -17,7 +18,7 @@ const siteTypes = [
 const objectives = ["Vender um produto/serviço", "Captar leads", "Mostrar meu trabalho", "Divulgar conteúdo"];
 const features = ["Blog/Posts", "Formulário de contato", "Galeria de imagens", "Integração com WhatsApp", "SEO otimizado", "Chat ao vivo"];
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const SiteWizard = ({ onBack }: SiteWizardProps) => {
   const [step, setStep] = useState(1);
@@ -26,6 +27,7 @@ const SiteWizard = ({ onBack }: SiteWizardProps) => {
   const [selectedObjective, setSelectedObjective] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState("");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [designSystem, setDesignSystem] = useState<DesignSystem>({ palette: "", typography: "", style: "" });
   const [copied, setCopied] = useState(false);
 
   const progress = (step / TOTAL_STEPS) * 100;
@@ -40,12 +42,13 @@ const SiteWizard = ({ onBack }: SiteWizardProps) => {
       case 2: return selectedObjective !== null;
       case 3: return businessName.trim().length > 0;
       case 4: return selectedFeatures.length > 0;
+      case 5: return designSystem.palette !== "" && designSystem.typography !== "" && designSystem.style !== "";
       default: return true;
     }
   };
 
   const generatedPRD = useMemo(() => {
-    if (step !== 5) return "";
+    if (step !== 6) return "";
 
     const tipoSite = selectedType !== null ? siteTypes[selectedType].title : customType;
 
@@ -54,21 +57,21 @@ const SiteWizard = ({ onBack }: SiteWizardProps) => {
         case "Vender um produto/serviço": return "Foco em conversão. Hero com proposta de valor clara, CTA principal em destaque, prova social (depoimentos, notas), seção de benefícios, FAQ, garantia e checkout rápido. Design que gera confiança e urgência.";
         case "Captar leads": return "Foco em captação. Formulários otimizados com poucos campos, lead magnets (ebook, checklist, template), pop-ups de saída, prova social, depoimentos e integração com email marketing (Mailchimp, RD Station).";
         case "Mostrar meu trabalho": return "Foco em impacto visual. Grid de projetos com imagens de alta qualidade, descrição de cada trabalho, métricas de resultado, depoimentos de clientes e CTA para contato direto.";
-        case "Divulgar conteúdo": return "Foco em SEO e engajamento. Blog com categorias, busca interna, posts relacionados, compartilhamento social, newsletter e CTA para转化ão em cada artigo.";
+        case "Divulgar conteúdo": return "Foco em SEO e engajamento. Blog com categorias, busca interna, posts relacionados, compartilhamento social, newsletter e CTA para conversão em cada artigo.";
         default: return "";
       }
     })();
 
     const pages = (() => {
       switch (selectedType) {
-        case 0: // Landing Page
+        case 0:
           return `1. **Hero** — Headline principal, sub-headline, CTA em destaque, imagem/vídeo de apoio
 2. **Benefícios** — 3-4 benefícios com ícones e descrição curta
 3. **Como funciona** — Passo a passo simplificado (3 etapas)
 4. **Prova social** — Depoimentos, logos de clientes, notas
 5. **FAQ** — Perguntas frequentes que eliminam objeções
 6. **Rodapé** — Links úteis, contato, redes sociais`;
-        case 1: // Site Institucional
+        case 1:
           return `1. **Home** — Hero com proposta de valor, serviços, sobre, CTA
 2. **Sobre** — História, missão, valores, equipe
 3. **Serviços** — Lista detalhada com descrição e preços
@@ -76,7 +79,7 @@ const SiteWizard = ({ onBack }: SiteWizardProps) => {
 5. **Blog** — Conteúdo para SEO programático
 6. **Contato** — Formulário, mapa, WhatsApp, telefone
 7. **Política de Privacidade** — Legal obrigatório`;
-        case 2: // Loja Virtual
+        case 2:
           return `1. **Home** — Hero com ofertas, categorias em destaque, mais vendidos
 2. **Catálogo** — Filtros, busca, ordenação, grid de produtos
 3. **Página do Produto** — Imagens, descrição, preço, variações, avaliações
@@ -84,14 +87,14 @@ const SiteWizard = ({ onBack }: SiteWizardProps) => {
 5. **Checkout** — Dados pessoais, pagamento (Stripe/Pix), confirmação
 6. **Minha Conta** — Pedidos, favoritos, dados pessoais
 7. **Política de Troca** — Termos e condições`;
-        case 3: // Portfólio
+        case 3:
           return `1. **Home** — Apresentação pessoal, destaque dos melhores trabalhos
 2. **Projetos** — Grid/masonry com filtros por categoria
 3. **Detalhe do Projeto** — Imagens, descrição do processo, resultados
 4. **Sobre mim** — Bio, experiência, habilidades, ferramentas
 5. **Depoimentos** — Feedback de clientes
 6. **Contato** — Formulário e links diretos`;
-        case 4: // Bio Link
+        case 4:
           return `1. **Perfil** — Foto, nome, bio curta
 2. **Links** — Lista de links com ícones e descrição
 3. **Redes Sociais** — Ícones clicáveis para cada rede
@@ -137,6 +140,33 @@ ${featuresList}
 
 ---
 
+## 🎨 Design System
+
+### Paleta de Cores: ${designSystem.palette}
+
+| Elemento | Uso |
+|----------|-----|
+| **Cor primária** | Botões, links, destaques |
+| **Cor secundária** | Fundos, badges, ícones |
+| **Cor de fundo** | Background geral |
+| **Texto principal** | Títulos e parágrafos |
+| **Texto suave** | Descrições, placeholders |
+
+### Tipografia: ${designSystem.typography}
+
+- **Títulos**: Fonte display com peso bold, escala modular (1.25x)
+- **Corpo**: Fonte legível para leitura longa, peso regular 400-500
+- **Tamanhos**: H1 (2.5rem), H2 (2rem), H3 (1.5rem), Body (1rem), Small (0.875rem)
+
+### Estilo Visual: ${designSystem.style}
+
+- **Espaçamento**: Sistema de 8px base (8, 16, 24, 32, 48, 64)
+- **Border radius**: ${designSystem.style === "Apple" ? "0-12px (sutil)" : designSystem.style === "Airbnb" ? "8-16px (generoso)" : designSystem.style === "Stripe" ? "8-12px com glassmorphism" : designSystem.style === "Coca-Cola" ? "0-4px (mínimo)" : designSystem.style === "Spotify" ? "8-12px (cards arredondados)" : "8px (consistente)"}
+- **Sombras**: ${designSystem.style === "Apple" ? "Muito sutis, quase invisíveis" : designSystem.style === "Stripe" ? "Gradientes com blur" : "Leves e naturais"}
+- **Animações**: Transições suaves 200-300ms, hover states em todos os elementos interativos
+
+---
+
 ## 🔍 SEO
 
 - **Meta title**: Dinâmico por página, max 60 caracteres
@@ -166,20 +196,10 @@ ${featuresList}
 
 ---
 
-## 🎨 Design
-
-- Paleta de cores alinhada com a identidade visual da marca
-- Tipografia limpa e legível
-- Espaçamento consistente
-- Botões com hover states e micro-animações
-- Cards e seções com bordas suaves e sombras sutis
-
----
-
 > **Prompt para IA criar este projeto:**
 >
-> Crie um ${tipoSite.toLowerCase()} para o negócio "${businessName}" com objetivo de "${selectedObjective?.toLowerCase()}". Implemente todas as páginas listadas acima com design responsivo premium, SEO otimizado e as funcionalidades: ${selectedFeatures.join(", ")}.`;
-  }, [step, selectedType, customType, selectedObjective, businessName, selectedFeatures]);
+> Crie um ${tipoSite.toLowerCase()} para o negócio "${businessName}" com objetivo de "${selectedObjective?.toLowerCase()}". Use o estilo visual "${designSystem.style}" com paleta de cores "${designSystem.palette}" e tipografia "${designSystem.typography}". Implemente todas as páginas listadas acima com design responsivo premium, SEO otimizado e as funcionalidades: ${selectedFeatures.join(", ")}.`;
+  }, [step, selectedType, customType, selectedObjective, businessName, selectedFeatures, designSystem]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedPRD);
@@ -290,6 +310,14 @@ ${featuresList}
 
         {step === 5 && (
           <div className="animate-fade-in-up">
+            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-center mb-2">Design System</h2>
+            <p className="text-muted-foreground text-center text-sm mb-6">Escolha as cores, fontes e estilo visual</p>
+            <DesignSystemPicker selected={designSystem} onChange={setDesignSystem} />
+          </div>
+        )}
+
+        {step === 6 && (
+          <div className="animate-fade-in-up">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-primary" />
@@ -325,7 +353,7 @@ ${featuresList}
       </div>
 
       {/* Bottom CTA */}
-      {step < 5 && (
+      {step < 6 && (
         <div className="fixed bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border">
           <div className="max-w-2xl mx-auto">
             <button
@@ -334,7 +362,7 @@ ${featuresList}
               className="w-full py-3 sm:py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
               style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
             >
-              {step === 4 ? "Gerar PRD do Site" : "Continuar"}
+              {step === 5 ? "Gerar PRD do Site" : "Continuar"}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
