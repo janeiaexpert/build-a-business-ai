@@ -433,7 +433,7 @@ ${needsAuth ? `- Autenticação via email + senha
 
       {/* Bottom CTA */}
       {step < 7 && (
-        <div className="fixed bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border" style={{ zIndex: 9999 }}>
+        <div className="sticky bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border" style={{ zIndex: 50 }}>
           <div className="max-w-2xl mx-auto">
             <button
               disabled={!canAdvance()}
