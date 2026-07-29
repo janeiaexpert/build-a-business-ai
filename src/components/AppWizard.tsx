@@ -165,13 +165,19 @@ ${features}
 
 ### Paleta de Cores: ${designSystem.palette}
 
-| Elemento | Uso |
+${designSystem.palette === "Personalizado" ? `| Elemento | Cor |
+|----------|-----|
+| **Cor primária** | ${designSystem.customPrimary} |
+| **Cor secundária** | ${designSystem.customSecondary} |
+| **Cor de fundo** | Gerada automaticamente |
+| **Texto principal** | Gerado automaticamente |
+| **Texto suave** | Gerado automaticamente |` : `| Elemento | Uso |
 |----------|-----|
 | **Cor primária** | Botões, links, destaques |
 | **Cor secundária** | Fundos, badges, ícones |
 | **Cor de fundo** | Background geral |
 | **Texto principal** | Títulos e parágrafos |
-| **Texto suave** | Descrições, placeholders |
+| **Texto suave** | Descrições, placeholders |`}
 
 ### Tipografia: ${designSystem.typography}
 
