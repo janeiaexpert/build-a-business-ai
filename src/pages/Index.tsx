@@ -1,7 +1,8 @@
 import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import ProjectCards from "@/components/ProjectCards";
-import WizardFlow from "@/components/WizardFlow";
+import SiteWizard from "@/components/SiteWizard";
+import AppWizard from "@/components/AppWizard";
 import GalacticBackground from "@/components/GalacticBackground";
 import { useAuth } from "@/AuthContext";
 import { Link } from "react-router-dom";
@@ -12,8 +13,12 @@ const Index = () => {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  if (selectedType) {
-    return <WizardFlow projectType={selectedType} onBack={() => setSelectedType(null)} />;
+  if (selectedType === "site") {
+    return <SiteWizard onBack={() => setSelectedType(null)} />;
+  }
+
+  if (selectedType === "app") {
+    return <AppWizard onBack={() => setSelectedType(null)} />;
   }
 
   return (
