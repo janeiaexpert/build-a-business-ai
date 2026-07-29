@@ -230,7 +230,7 @@ ${designSystem.palette === "Personalizado" ? `| Elemento | Cor |
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-4 sm:px-6 max-w-2xl mx-auto w-full pb-32">
+      <div className="flex-1 px-4 sm:px-6 max-w-2xl mx-auto w-full">
         {step === 1 && (
           <div className="animate-fade-in-up">
             <h2 className="font-heading text-2xl sm:text-3xl font-bold text-center mb-2">Que tipo de site você quer?</h2>
@@ -360,18 +360,16 @@ ${designSystem.palette === "Personalizado" ? `| Elemento | Cor |
 
       {/* Bottom CTA */}
       {step < 6 && (
-        <div className="sticky bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border" style={{ zIndex: 50 }}>
-          <div className="max-w-2xl mx-auto">
-            <button
-              disabled={!canAdvance()}
-              onClick={() => setStep(step + 1)}
-              className="w-full py-3 sm:py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
-              style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
-            >
-              {step === 5 ? "Gerar PRD do Site" : "Continuar"}
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+        <div className="px-4 sm:px-6 py-4 max-w-2xl mx-auto w-full">
+          <button
+            disabled={!canAdvance()}
+            onClick={() => setStep(step + 1)}
+            className="w-full py-3 sm:py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
+            style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
+          >
+            {step === 5 ? "Gerar PRD do Site" : "Continuar"}
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>
