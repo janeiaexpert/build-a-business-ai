@@ -230,7 +230,7 @@ ${dbSchema}
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <div className="px-4 pt-6 pb-4 max-w-2xl mx-auto w-full">
+      <div className="px-4 sm:px-6 pt-6 pb-4 max-w-2xl mx-auto w-full">
         <button onClick={step === 1 ? onBack : () => setStep(step - 1)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" />
           <span className="uppercase tracking-wider text-xs font-medium">Voltar</span>
@@ -244,7 +244,7 @@ ${dbSchema}
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-4 max-w-2xl mx-auto w-full pb-32">
+      <div className="flex-1 px-4 sm:px-6 max-w-2xl mx-auto w-full pb-32">
         {step === 1 && (
           <div className="animate-fade-in-up">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-2">O que vamos construir?</h2>
@@ -272,7 +272,7 @@ ${dbSchema}
                 value={customDescription}
                 onChange={(e) => setCustomDescription(e.target.value)}
                 placeholder="Descreva exatamente o que você precisa criar..."
-                className="w-full min-h-[100px] rounded-xl border border-border bg-card p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none mt-4"
+                className="w-full min-h-[80px] sm:min-h-[100px] rounded-xl border border-border bg-card p-3 sm:p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none mt-4"
               />
             )}
           </div>
@@ -282,12 +282,12 @@ ${dbSchema}
           <div className="animate-fade-in-up">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-2">Qual o objetivo?</h2>
             <p className="text-muted-foreground text-center text-sm mb-8">Escolha o que deseja alcançar</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {objectives.map((obj) => (
                 <button
                   key={obj}
                   onClick={() => setSelectedObjective(obj)}
-                  className={`rounded-xl p-5 text-left border transition-all ${selectedObjective === obj ? "border-primary/50 bg-primary/5" : "border-border bg-card hover:border-muted-foreground/20"}`}
+                  className={`rounded-xl p-4 sm:p-5 text-left border transition-all ${selectedObjective === obj ? "border-primary/50 bg-primary/5" : "border-border bg-card hover:border-muted-foreground/20"}`}
                 >
                   <p className="font-semibold text-sm text-foreground">{obj}</p>
                 </button>
@@ -304,7 +304,7 @@ ${dbSchema}
               value={audience}
               onChange={(e) => setAudience(e.target.value)}
               placeholder="Ex: Empreendedores digitais que querem criar landing pages..."
-              className="w-full min-h-[160px] rounded-xl border border-border bg-card p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+              className="w-full min-h-[120px] sm:min-h-[160px] rounded-xl border border-border bg-card p-3 sm:p-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
             />
           </div>
         )}
@@ -313,12 +313,12 @@ ${dbSchema}
           <div className="animate-fade-in-up">
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-2">Como vai monetizar?</h2>
             <p className="text-muted-foreground text-center text-sm mb-8">Escolha o modelo de receita</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {monetizations.map((m) => (
                 <button
                   key={m}
                   onClick={() => setSelectedMonetization(m)}
-                  className={`rounded-xl p-5 text-left border transition-all flex items-center gap-3 ${selectedMonetization === m ? "border-primary/50 bg-primary/5" : "border-border bg-card hover:border-muted-foreground/20"}`}
+                  className={`rounded-xl p-4 sm:p-5 text-left border transition-all flex items-center gap-3 ${selectedMonetization === m ? "border-primary/50 bg-primary/5" : "border-border bg-card hover:border-muted-foreground/20"}`}
                 >
                   <CreditCard className="w-4 h-4 text-primary" />
                   <p className="font-semibold text-sm text-foreground">{m}</p>
@@ -351,7 +351,7 @@ ${dbSchema}
             </button>
 
             {/* PRD Preview */}
-            <div className="rounded-xl border border-border bg-card p-5 overflow-auto max-h-[60vh]">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 overflow-auto max-h-[50vh] sm:max-h-[60vh]">
               <pre className="whitespace-pre-wrap text-xs text-foreground/90 font-mono leading-relaxed">{generatedPRD}</pre>
             </div>
 
@@ -369,12 +369,12 @@ ${dbSchema}
 
       {/* Bottom CTA */}
       {step < 5 && (
-        <div className="fixed bottom-0 inset-x-0 p-4 glass border-t border-border">
+        <div className="fixed bottom-0 inset-x-0 p-3 sm:p-4 glass border-t border-border">
           <div className="max-w-2xl mx-auto">
             <button
               disabled={!canAdvance()}
               onClick={() => setStep(step + 1)}
-              className="w-full py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
+              className="w-full py-3 sm:py-4 rounded-xl font-semibold text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] text-primary-foreground flex items-center justify-center gap-2"
               style={{ background: canAdvance() ? "var(--gradient-cta)" : undefined }}
             >
               {step === 4 ? "Gerar PRD" : "Continuar"}
